@@ -19,18 +19,15 @@ Vagrant.configure("2") do |config|
         vb.cpus = conf["cpu"]
       end
       machine.vm.provision "shell", path: "docker.sh"
+      machine.vm.provision "shell", inline: "sudo iptables -A INPUT -p tcp --dport 2377 -j ACCEPT"
 
       if "#{name}" == "master"
         machine.vm.provision "shell", path: "master.sh"
+        machine.vm.provision "shell", path: "apache.sh"
       else
         machine.vm.provision "shell", path: "worker.sh"
       end
 
     end
-    
-    if "#{name}" == "master"
-      config.vm.provision "shell", path: "apache.sh"
-    end
-
   end
 end
